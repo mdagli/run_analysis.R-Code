@@ -1,0 +1,55 @@
+run_analysis<-function()
+{
+##This function uses the dplyr package. These can be installed with 
+##install.packages("dplyr”)  library(dplyr)  }    
+
+        
+##This first part of the function will read in the various files using read.table.  
+##It assumes that the files are within the working directory. It only reads in the necessary files. 
+##It ignores the files in the Inertial Signals folders as these do not appear to be necesssary         
+        features<-read.table("features.txt", header=FALSE, sep="")
+        subjecttest<-read.table("subject_test.txt", header=FALSE, sep="")
+        xtest<-read.table("X_test.txt", header=FALSE, sep="")
+        ytest<-read.table("y_test.txt", header=FALSE, sep="")
+        subjecttrain<-read.table("subject_train.txt", header=FALSE, sep="")
+        xtrain<-read.table("X_train.txt", header=FALSE, sep="")
+        ytrain<-read.table("y_train.txt", header=FALSE, sep="")
+        
+##this next part of the function will label the column names.  The acquired data is labelled with the labels in the "features"
+##file.  
+        colnames<-c("meanbodyaccelerationXdir", "meanbodyaccelerationydir", "meanbodyaccelerationZdir", "stddevbodyaccelerationXdir", "stddevbodyaccelerationYdir", "stddevbodyaccelerationZdir", "meanGravityaccerationXdir","meanGravityaccerationYdir", "meanGravityaccerationZdir", "STDGravityaccerationXdir","STDGravityaccerationYdir", "STDGravityaccerationZdir") ##more readable columnnames. 
+        ##columnnames<-features[,2]
+        colnames(xtest)<-columnnames
+        colnames(xtrain)<-columnnames
+        colnames(ytrain)<-"activity"
+        colnames(ytest)<-"activity"
+        colnames(subjecttrain)<-"subject"
+        colnames(subjecttest)<-"subject"
+
+##This next part of the function will merge the testing  and training data using cbind and rbind
+testdata<-cbind(subjecttest,ytest,xtest)
+traindata<-cbind(subjecttrain,ytrain,xtrain)
+mergeddata<-rbind(traindata,testdata)
+
+##The next line will subset the relevant mean and data columns. Because the assignment does not specify, I choose only a small subset 
+##in order to make it more manageable. 
+
+subdata<-mergeddata[,c(1:8,43:48)]  
+
+##I will now recode the activity variables from numbers to more explanatory variables. 
+subdata$activity[(subdata$activity==1)]<-"walking"
+subdata$activity[(subdata$activity==2)]<-"walking upstairs"
+subdata$activity[(subdata$activity==3)]<-"walking downstairs"
+subdata$activity[(subdata$activity==4)]<-"sitting"
+subdata$activity[(subdata$activity==5)]<-"standing"
+subdata$activity[(subdata$activity==6)]<-"laying"
+
+##This next part of the function requires installation of the dplyr package.  It will group the data by subject and activity
+##It then computes the means of each variable segregated by the thirty subject and six activity.  
+subdata<-tbl_df(subdata)  ##probably not necessary but makes printing of the dataset to the screen more manageable
+test<-group_by(subdata, subject, activity)    ##segregates the variables by subject and acivity
+meanresults<-summarise_each(test, funs(mean))  ##returns a table with the variable means for each subject for each acivity
+newcolnames<-c("subject", "activity", "avgmeanbodyaccelerationXdir", "avgmeanbodyaccelerationydir", "avgmeanbodyaccelerationZdir", "avgstddevbodyaccelerationXdir", "avgstddevbodyaccelerationYdir", "avgstddevbodyaccelerationZdir", "avgmeanGravityaccerationXdir","avgmeanGravityaccerationYdir", "avgmeanGravityaccerationZdir", "avgSTDGravityaccerationXdir","avgSTDGravityaccerationYdir", "avgSTDGravityaccerationZdir")   ##assigns new column names
+colnames(meanresults)<-newcolnames
+return(meanresults)
+}
