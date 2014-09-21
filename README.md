@@ -21,7 +21,7 @@ It will group the data by subject and activity
 It then computes the means of each variable segregated by the thirty subject and six activity. 
 The function then returns the dataset in the variable "meanresults"
 
-Codebook for the returned meanresults data set.
+CODEBOOK FOR THE RETURNED MEANRESULTS DATA SET
 
 The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years.
 Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a 
