@@ -11,7 +11,7 @@ This next part of the function will label the column names.  The acquired data i
 The next part of the function will merge the testing  and training data using cbind and rbind
 It will then subset the relevant mean and data columns. Because the assignment does not specify, I choose only a small subset of 
 possible columns in order to make it more manageable. 
-The runction then recodes the activity variables from numbers to more explanatory variables. 
+The Function then recodes the activity variables from numbers to more explanatory variables. 
 
 The next part of the function requires installation of the dplyr package.  
 These can be installed with 
